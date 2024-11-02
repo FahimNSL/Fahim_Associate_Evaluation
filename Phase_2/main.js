@@ -15,7 +15,7 @@ function renderImages() {
                 <div class="original-text">Original Text: ${item.text}</div>
                 <input type="text" 
                        class="correction-input" 
-                       placeholder="Enter correction" 
+                       placeholder="Input correction and press Enter" 
                        data-index="${index}">
                 <div class="corrections-history">
                     <h4 style="color: black; display: inline-block;">Correction History</h4>
