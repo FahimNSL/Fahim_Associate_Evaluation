@@ -1,0 +1,140 @@
+:root {
+  --primary-bg-color: #001f3f; 
+  --secondary-bg-color: #00264d; 
+  --text-color: #ffffff; 
+  --accent-color: #4CAF50; 
+  --light-grey: #f5f5f5;
+  --dark-grey: #666; 
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--primary-bg-color); 
+  color: var(--text-color); 
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: var(--secondary-bg-color); 
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.button-container {
+  display: flex;
+  justify-content: space-between; 
+  margin-bottom: 20px;
+}
+
+.export-button {
+  padding: 10px 15px;
+  background-color: #007bff; 
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.export-button:hover {
+  background-color: #0056b3; 
+}
+
+.image-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.image-item {
+  background: white; 
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image-item img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.image-info {
+  margin-top: 1rem;
+}
+
+.image-name {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.original-text {
+  color: var(--dark-grey); 
+  margin-bottom: 1rem;
+}
+
+.correction-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  max-width: 300px; 
+  font-size: 1rem;
+}
+
+.corrections-history {
+  background: #f8f8f8;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-top: 1rem;
+  max-height: 80px; 
+  overflow-y: auto; 
+}
+
+.corrections-history h4 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.correction-entry {
+  font-size: 0.9rem;
+  color: var(--dark-grey); 
+  margin-bottom: 0.5rem;
+}
+
+.export-button {
+  display: block;
+  margin: 2rem auto;
+  padding: 0.8rem 1.5rem;
+  background-color: var(--accent-color); 
+  color: var(--text-color);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.export-button:hover {
+  background-color: #45a049;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .image-item {
+    padding: 1rem;
+  }
+}
