@@ -28,7 +28,7 @@ export default function Layout({ children }) {
             sx={{ cursor: "pointer" }}
             onClick={() => navigate("/")}
           >
-            NSL R&D 
+            R&D Reports
           </Typography>
           <Navigation isMobile={isMobile} user={user} />
         </Toolbar>

@@ -14,8 +14,9 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { api } from '../store/api';
+import { toast } from 'react-toastify';
 
-export default function ResearchPaperList({ projectId, canAdd }) {
+export default function ResearchPaperList({ projectId, canAdd,canDelete }) {
   const [open, setOpen] = useState(false);
   const [paper, setPaper] = useState({
     title: '',
@@ -73,6 +74,7 @@ export default function ResearchPaperList({ projectId, canAdd }) {
         })
         .unwrap()
         .then((response) => {
+          toast("Research paper deleted successfully", { type: "success" });
           console.log('Research paper deleted successfully:', response);
         })
         .catch((error) => {
@@ -122,9 +124,9 @@ export default function ResearchPaperList({ projectId, canAdd }) {
                   </>
                 }
               />
-              <Button variant="outlined" color="error" onClick={() => handleDeletePaper(paper._id)} disabled={isDeleting}>
+              {canDelete && <Button variant="outlined" color="error" onClick={() => handleDeletePaper(paper._id)} disabled={isDeleting}>
                 Delete
-              </Button>
+              </Button>}
             </ListItem>
           ))}
         </List>

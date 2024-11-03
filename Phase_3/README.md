@@ -71,32 +71,67 @@ This web application allows users to manage and store R&D reports effectively. I
    - result: Object (e.g., { accuracy: Number, precision: Number })
    - datasetUsed: String
 
-## Backend Setup
 
-### Prerequisites
-- Node.js
-- MongoDB
 
 
 ## API Documentation
  -https://documenter.getpostman.com/view/38334049/2sAY4xBMnM
 
 
-## Project Setup
+## Frontend Setup
 
 ### Installation
-
+Navigate to the frontend directory:
+```bash
+cd frontend
+```
 Install dependencies:
 ```bash
 npm install
 ```
-
-### Running the Project
-Start the application:
+Ensure you have Node.js version 22 installed. Verify the installation by running:
 ```bash
-npm run dev
+   node -v
+```
+
+### Running the Frontend
+Start the React application:
+```bash
+npm run client
 ```
 The frontend will run on `http://localhost:5173`.
+
+
+## Backend Setup
+
+### Prerequisites
+- Node.js
+- MongoDB
+
+### Installation
+
+Navigate to the backend directory:
+```bash
+cd backend
+```
+ 
+Install dependencies:
+```bash
+npm install
+```
+Ensure you have Node.js version 22 installed. Verify the installation by running:
+```bash
+   node -v
+```
+
+### Running the Server
+Start the server:
+```bash
+npm run server
+```
+The backend will run on `http://localhost:5000`.
+
+
 
 ## Usage
 
@@ -112,3 +147,16 @@ The application includes visual graphs  to represent contribution history and pr
 ## Admin credentials
    email: fahim@nsl1.com
    password: 123456
+
+
+
+
+
+
+
+
+
+
+
+
+
