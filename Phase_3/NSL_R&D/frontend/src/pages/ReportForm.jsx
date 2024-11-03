@@ -13,6 +13,7 @@ import {
 import { api, useCreateReportMutation, useEditReportMutation } from "../store/api";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "react-toastify";
+
 export default function ReportForm() {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -32,7 +33,6 @@ export default function ReportForm() {
   const [createReport, { isLoading: isLoadingCreate }] = useCreateReportMutation();
   const [updateReport, { isLoading: isLoadingUpdate }] = useEditReportMutation();
 
-
   const isLoading = isLoadingCreate || isLoadingUpdate;
 
   useEffect(() => {
@@ -40,91 +40,66 @@ export default function ReportForm() {
       setFormData({
         title: report.title,
         description: report.description,
-        accuracy: report.accuracy || "", // Set to empty string if accuracy is null
+        accuracy: report.accuracy || "",
         status: report.status,
         project: report.project._id,
         author: report.author._id,
-        researchPapers: report.researchPapers // Set the author if editing
       });
-  
-      // Check if files are present and set accordingly
       setFiles(
-        report.files?.map(file => 
-          typeof file === 'string' ? { name: file } : file
-        ) || []
+        report.files?.map(file => (typeof file === 'string' ? { name: file } : file)) || []
       );
     }
   }, [report]);
 
-console.log({formData})
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const formDataObj = new FormData();
-
-  // Append the form data
-  Object.keys(formData).forEach((key) => {
-    formDataObj.append(key, formData[key]);
-  });
-  
-  files.forEach((file) => {
-    formDataObj.append("files", file);
-  });
-
-  // Convert accuracy to a number before submitting
-  if (formData.accuracy) {
-    formDataObj.set("accuracy", Number(formData.accuracy));
-  }
-
-  const updatedData = {
-    ...formData,
-    files: files.map((file) => (typeof file === "string" ? file : file.name)),
-  
-  };
-  
-  try {
-    if (id) {
-      // Update existing report
-      await updateReport({ id, updatedData })
-        .unwrap()
-        .then((response) => {
-          console.log({ "response update": response });
-         toast.success("Report updated successfully", { type: "success" })
-          navigate(`/projects/${formData?.project}`);
-        });
-    } else {
-      // Create new report
-      await createReport(formDataObj)
-        .unwrap()
-        .then((response) => {
-          console.log({ "response create": response });
-          toast("Report created successfully", { type: "success" })
-          navigate(`/projects/${formData?.project}`);
-        });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formDataObj = new FormData();
+    Object.keys(formData).forEach((key) => {
+      formDataObj.append(key, formData[key]);
+    });
+    files.forEach((file) => {
+      formDataObj.append("files", file);
+    });
+    if (formData.accuracy) {
+      formDataObj.set("accuracy", Number(formData.accuracy));
     }
-  } catch (error) {
-    console.error("Failed to save report:", error);
-  }
-};
 
+    const updatedData = {
+      ...formData,
+      files: files.map((file) => (typeof file === "string" ? file : file.name)),
+    };
+
+    try {
+      if (id) {
+        await updateReport({ id, updatedData }).unwrap();
+        toast.success("Report updated successfully");
+        navigate(`/projects/${formData.project}`);
+      } else {
+        await createReport(formDataObj).unwrap();
+        toast.success("Report created successfully");
+        navigate(`/projects/${formData.project}`);
+      }
+    } catch (error) {
+      console.error("Failed to save report:", error);
+    }
+  };
 
   return (
-    <Box component="form" onSubmit={handleSubmit}>
-      <Typography variant="h4" sx={{ mb: 4 }}>
+    <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 600, mx: "auto", my: 4 }}>
+      <Typography variant="h4" sx={{ mb: 4, textAlign: 'center', color: 'primary.main' }}>
         {id ? "Edit Report" : "New Report"}
       </Typography>
-
-      <Paper sx={{ p: 3 }}>
+      <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <TextField
               fullWidth
               label="Title"
               value={formData.title}
-              onChange={(e) =>
-                setFormData({ ...formData, title: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               required
+              variant="outlined"
+              sx={{ bgcolor: 'background.default' }}
             />
           </Grid>
           <Grid item xs={12}>
@@ -134,10 +109,10 @@ const handleSubmit = async (e) => {
               rows={4}
               label="Description"
               value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               required
+              variant="outlined"
+              sx={{ bgcolor: 'background.default' }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -146,10 +121,10 @@ const handleSubmit = async (e) => {
               type="number"
               label="Accuracy (%)"
               value={formData.accuracy}
-              onChange={(e) =>
-                setFormData({ ...formData, accuracy: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, accuracy: e.target.value })}
               inputProps={{ min: 0, max: 100 }}
+              variant="outlined"
+              sx={{ bgcolor: 'background.default' }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -158,10 +133,10 @@ const handleSubmit = async (e) => {
               select
               label="Status"
               value={formData.status}
-              onChange={(e) =>
-                setFormData({ ...formData, status: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
               required
+              variant="outlined"
+              sx={{ bgcolor: 'background.default' }}
             >
               <MenuItem value="draft">Draft</MenuItem>
               <MenuItem value="in-review">In Review</MenuItem>
@@ -177,19 +152,21 @@ const handleSubmit = async (e) => {
               id="file-input"
             />
             <label htmlFor="file-input">
-              <Button variant="outlined" component="span">
+              <Button variant="outlined" component="span" fullWidth>
                 Upload Files
               </Button>
             </label>
             {files.length > 0 && (
-  <Typography sx={{ mt: 1 }}>
-    Selected files: {files.map((f) => f.name).join(", ")}
-  </Typography>
-)}
+              <Typography sx={{ mt: 1 }}>
+                Selected files: {files.map((f) => f.name).join(", ")}
+              </Typography>
+            )}
           </Grid>
           <Grid item xs={12}>
             <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
-              <Button onClick={() => navigate(-1)} disabled={isLoading}>Cancel</Button>
+              <Button onClick={() => navigate(-1)} disabled={isLoading} variant="outlined">
+                Cancel
+              </Button>
               <Button
                 type="submit"
                 variant="contained"

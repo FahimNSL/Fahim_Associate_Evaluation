@@ -2,13 +2,14 @@ import { useState } from "react";
 import {
   Box,
   Button,
+  Card,
+  CardContent,
   List,
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
   IconButton,
   Typography,
-  Paper,
   Grid,
   Dialog,
   DialogActions,
@@ -27,16 +28,16 @@ const getFileIcon = (mimeType) => {
     return null;
   }
   if (mimeType === "application/pdf") {
-    return <FaFilePdf style={{ fontSize: '24px' }} />;
+    return <FaFilePdf style={{ fontSize: '24px', color: '#d32f2f' }} />;
   }
   if (mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
-    return <FaFileWord style={{ fontSize: '24px' }} />;
+    return <FaFileWord style={{ fontSize: '24px', color: '#1976d2' }} />;
   }
   if (mimeType.startsWith("video/")) {
-    return <FaFileVideo style={{ fontSize: '24px' }} />;
+    return <FaFileVideo style={{ fontSize: '24px', color: '#fbc02d' }} />;
   }
   if (mimeType.startsWith("audio/")) {
-    return <FaFileAudio style={{ fontSize: '24px' }} />;
+    return <FaFileAudio style={{ fontSize: '24px', color: '#4caf50' }} />;
   }
   return <FaFile style={{ fontSize: '24px' }} />;
 };
@@ -70,7 +71,7 @@ const FilePreview = ({ file }) => {
 export default function ReportList({ projectId, canAdd }) {
   const navigate = useNavigate();
   const { data: reports, isLoading } = api.useGetReportsQuery(projectId);
-  const [deleteReport] = api.useDeleteReportMutation(); // API hook for deleting reports
+  const [deleteReport] = api.useDeleteReportMutation();
   const [openDialog, setOpenDialog] = useState(false);
   const [reportToDelete, setReportToDelete] = useState(null);
 
@@ -114,69 +115,70 @@ export default function ReportList({ projectId, canAdd }) {
         )}
       </Box>
 
-      <Paper elevation={2} sx={{ padding: 2 }}>
+      <Card elevation={2} sx={{ padding: 2 }}>
         <List>
           {reports?.map((report) => (
-            <ListItem key={report._id} sx={{ borderBottom: '1px solid #e0e0e0' }}>
-              <ListItemText
-                primary={<Typography variant="h6">{report.title}</Typography>}
-                secondary={
-                  <Box>
-                    <Typography component="span" variant="body2" sx={{ fontWeight: 'bold' }}>
-                      Status: {report.status}
-                    </Typography>
-                    <br />
-                    <Typography component="span" variant="body2">
-                      Accuracy: {report.accuracy}%<br />
-                      Author: {report.author?.name || 'Unknown'}
-                    </Typography>
-                  </Box>
-                }
-              />
-              <ListItemSecondaryAction>
-                {canAdd && (
-                  <>
-                    <IconButton onClick={() => navigate(`/reports/${report._id}/edit`)}>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton onClick={() => confirmDelete(report._id)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </>
-                )}
-              </ListItemSecondaryAction>
-
-              {report.files && report.files.length > 0 && (
-                <Grid container spacing={1} sx={{ mt: 2 }}>
-                  {report.files.map((file) => (
-                    <Grid item xs={12} sm={3} md={3} key={file._id}>
-                      <Paper sx={{ padding: 1, display: 'flex', alignItems: 'center', borderRadius: 2, boxShadow: 1 }}>
-                        <FilePreview file={file} />
-                        <IconButton
-                          onClick={() => {
-                            const link = document.createElement("a");
-                            link.href = `/${file.path}`;
-                            link.download = file.filename;
-                            link.click();
-                          }}
-                        >
-                          <MdDownload style={{ fontSize: '24px' }} />
+            <ListItem key={report._id} sx={{ borderBottom: '1px solid #e0e0e0', padding: 2 }}>
+              <Card sx={{ width: '100%', borderRadius: 2, boxShadow: 2 }}>
+                <CardContent>
+                  <ListItemText
+                    primary={<Typography variant="h6" sx={{ fontWeight: 'bold' }}>{report.title}</Typography>}
+                    secondary={
+                      <Box>
+                        <Typography component="span" variant="body2" sx={{ fontWeight: 'bold' }}>
+                          Status: {report.status}
+                        </Typography>
+                        <br />
+                        <Typography component="span" variant="body2">
+                          Accuracy: {report.accuracy}%<br />
+                          Author: {report.author?.name || 'Unknown'}
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                  <ListItemSecondaryAction>
+                    {canAdd && (
+                      <>
+                        <IconButton onClick={() => navigate(`/reports/${report._id}/edit`)}>
+                          <EditIcon />
                         </IconButton>
-                      </Paper>
+                        <IconButton onClick={() => confirmDelete(report._id)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </>
+                    )}
+                  </ListItemSecondaryAction>
+
+                  {report.files && report.files.length > 0 && (
+                    <Grid container spacing={1} sx={{ mt: 2 }}>
+                      {report.files.map((file) => (
+                        <Grid item xs={12} sm={3} md={3} key={file._id}>
+                          <Card sx={{ padding: 1, display: 'flex', alignItems: 'center', borderRadius: 2, boxShadow: 1 }}>
+                            <FilePreview file={file} />
+                            <IconButton
+                              onClick={() => {
+                                const link = document.createElement("a");
+                                link.href = `/${file.path}`;
+                                link.download = file.filename;
+                                link.click();
+                              }}
+                            >
+                              <MdDownload style={{ fontSize: '24px', color: '#1976d2' }} />
+                            </IconButton>
+                          </Card>
+                        </Grid>
+                      ))}
                     </Grid>
-                  ))}
-                </Grid>
-              )}
+                  )}
+                </CardContent>
+              </Card>
             </ListItem>
           ))}
         </List>
-      </Paper>
+      </Card>
 
       {/* Confirmation Dialog */}
-      <Dialog
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-      >
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Confirm Deletion</DialogTitle>
         <DialogContent>
           <DialogContentText>

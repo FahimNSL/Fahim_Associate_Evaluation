@@ -20,7 +20,6 @@ import {
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { useAddUserMutation, useDeleteUserMutation } from '../store/api';
 
-
 export default function TeamList({ projectId, canManageTeam, members, lead }) {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
@@ -35,7 +34,6 @@ export default function TeamList({ projectId, canManageTeam, members, lead }) {
       await addMember({ projectId, email }).unwrap(); // Unwrap the promise to handle success/error
       setOpen(false);
       setEmail('');
-      // Optionally refetch or update the members list here if necessary
     } catch (error) {
       console.error('Failed to add member:', error);
     }
@@ -45,7 +43,6 @@ export default function TeamList({ projectId, canManageTeam, members, lead }) {
     setLoadingRemove(memberId);
     try {
       await removeMember({ projectId, memberId }).unwrap(); // Unwrap the promise to handle success/error
-      // Optionally refetch or update the members list here if necessary
     } catch (error) {
       console.error('Failed to remove member:', error);
     } finally {
@@ -54,27 +51,29 @@ export default function TeamList({ projectId, canManageTeam, members, lead }) {
   };
 
   return (
-    <Box>
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h6">Team Members</Typography>
+    <Box sx={{ p: 3, borderRadius: '8px', boxShadow: 3 }}>
+      <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'primary.main' }}>Team Members</Typography>
         {canManageTeam && (
-          <Button variant="contained" onClick={() => setOpen(true)}>
+          <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
             Add Member
           </Button>
         )}
       </Box>
 
-      <Paper>
+      <Paper elevation={2} sx={{ borderRadius: '8px' }}>
         <List>
-          <ListItem>
+          {/* Colorful lead row */}
+          <ListItem sx={{ bgcolor: 'secondary.main', borderRadius: '8px', mb: 1, color: 'white', '&:hover': { bgcolor: 'secondary.dark' } }}>
             <ListItemAvatar>
-              <Avatar>{lead?.name[0]}</Avatar>
+              <Avatar sx={{ bgcolor: 'primary.main', color: 'white' }}>{lead?.name[0]}</Avatar>
             </ListItemAvatar>
             <ListItemText
-              primary={lead?.name}
-              secondary="Project Lead"
+              primary={<Typography variant="subtitle1" sx={{ fontWeight: '600', color: 'white' }}>{lead?.name}</Typography>}
+              secondary={<Typography variant="body2" color="white">Project Lead</Typography>}
             />
           </ListItem>
+
           {members?.map((member) => (
             <ListItem
               key={member._id}
@@ -85,13 +84,14 @@ export default function TeamList({ projectId, canManageTeam, members, lead }) {
                   </IconButton>
                 )
               }
+              sx={{ mb: 1, borderRadius: '8px', bgcolor: 'background.paper', '&:hover': { bgcolor: 'grey.100' } }}
             >
               <ListItemAvatar>
                 <Avatar>{member.name[0]}</Avatar>
               </ListItemAvatar>
               <ListItemText
-                primary={member.name}
-                secondary={member.email}
+                primary={<Typography variant="subtitle1" sx={{ fontWeight: '600' }}>{member.name}</Typography>}
+                secondary={<Typography variant="body2" color="text.secondary">{member.email}</Typography>}
               />
             </ListItem>
           ))}
@@ -109,12 +109,14 @@ export default function TeamList({ projectId, canManageTeam, members, lead }) {
             fullWidth
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            variant="outlined"
+            sx={{ bgcolor: 'background.default', borderRadius: '4px' }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={handleAddMember} variant="contained" disabled={loadingAdd}>
-            {loadingAdd ? <CircularProgress size={24} /> : 'Add'}
+          <Button onClick={() => setOpen(false)} color="secondary">Cancel</Button>
+          <Button onClick={handleAddMember} variant="contained" color="primary" disabled={loadingAdd}>
+            {loadingAdd ? <CircularProgress size={24} color="inherit" /> : 'Add'}
           </Button>
         </DialogActions>
       </Dialog>

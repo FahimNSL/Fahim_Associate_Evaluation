@@ -1,12 +1,12 @@
 import React from 'react';
 import { useGetReportsQuery } from '../store/api';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Paper, LinearProgress } from '@mui/material';
 
 const TeamContributionGraph = ({ projectId }) => {
   const { data, isLoading, isError } = useGetReportsQuery(projectId);
 
-  if (isLoading) return <Typography>Loading...</Typography>;
-  if (isError) return <Typography>Error loading data</Typography>;
+  if (isLoading) return <LinearProgress sx={{ width: '100%', mb: 2 }} />;
+  if (isError) return <Typography color="error">Error loading data</Typography>;
 
   // Group reports by author and store count along with author name
   const reportCounts = data.reduce((counts, report) => {
@@ -21,25 +21,40 @@ const TeamContributionGraph = ({ projectId }) => {
   }, {});
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h6">Team Contribution by Reports</Typography>
+    <Paper sx={{ p: 3, borderRadius: '8px', boxShadow: 3 }}>
+      <Typography variant="h5" sx={{ mb: 2, fontWeight: 'bold', color: 'primary.main' }}>
+        Team Contribution by Reports
+      </Typography>
       {Object.entries(reportCounts).map(([authorId, { count, name }]) => (
-        <Box key={authorId} sx={{ my: 1 }}>
-          <Typography variant="subtitle1">{`Author: ${name}`}</Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box key={authorId} sx={{ my: 2, display: 'flex', alignItems: 'center' }}>
+          <Typography variant="subtitle1" sx={{ width: '150px', fontWeight: '600' }}>
+            {name}
+          </Typography>
+          <Box sx={{ flexGrow: 1, mr: 2 }}>
             <Box
               sx={{
-                width: `${count * 10}px`, // Adjust width scaling as needed
-                height: '20px',
-                backgroundColor: 'primary.main',
-                borderRadius: '4px',
+                width: '100%',
+                height: '10px',
+                backgroundColor: 'grey.300',
+                borderRadius: '5px',
               }}
-            />
-            <Typography sx={{ ml: 1 }}>{count}</Typography>
+            >
+              <Box
+                sx={{
+                  width: `${Math.min(count * 10, 100)}%`, // Cap the width for visualization
+                  height: '100%',
+                  backgroundColor: 'primary.main',
+                  borderRadius: '5px',
+                }}
+              />
+            </Box>
           </Box>
+          <Typography variant="body1" sx={{ minWidth: '40px', textAlign: 'right', fontWeight: '600' }}>
+            {count}
+          </Typography>
         </Box>
       ))}
-    </Box>
+    </Paper>
   );
 };
 

@@ -13,6 +13,7 @@ import {
   DialogContent,
   DialogActions,
   CircularProgress,
+  Zoom,
 } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 import { useChangePasswordMutation } from '../store/api';
@@ -26,7 +27,7 @@ export default function Profile() {
     confirmPassword: '',
   });
   const [message, setMessage] = useState({ type: '', text: '' });
-  const [open, setOpen] = useState(false); // State to control the modal
+  const [open, setOpen] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,40 +49,51 @@ export default function Profile() {
         newPassword: '',
         confirmPassword: '',
       });
-      setOpen(false); // Close the modal after successful change
+      setOpen(false);
     } catch (error) {
       setMessage({ type: 'error', text: error.response?.data?.message || 'Failed to change password' });
     }
   };
 
   return (
-    <Box>
-      <Typography variant="h4" sx={{ mb: 4 }}>Profile</Typography>
+    <Box sx={{ p: 4, backgroundColor: '#f9f9f9', minHeight: '100vh' }}>
+      <Typography variant="h4" sx={{ mb: 4, textAlign: 'center', color: '#1976d2' }}>
+        Profile
+      </Typography>
 
       <Grid container spacing={4}>
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>User Information</Typography>
-            <Box sx={{ mt: 2 }}>
-              <Typography><strong>Name:</strong> {user.name}</Typography>
-              <Typography><strong>NSL ID:</strong> {user.nslId}</Typography>
-              <Typography><strong>Email:</strong> {user.email}</Typography>
-              <Typography><strong>Role:</strong> {user.userType}</Typography>
-            </Box>
-            <Button
-              variant="outlined"
-              onClick={() => setOpen(true)}
-              sx={{ mt: 2 }}
-            >
-              Change Password
-            </Button>
-          </Paper>
+          <Zoom in={true} timeout={1000}>
+            <Paper sx={{ p: 3, backgroundColor: '#ffffff', borderRadius: 2, boxShadow: 3 }}>
+              <Typography variant="h6" gutterBottom>User Information</Typography>
+              <Box sx={{ mt: 2 }}>
+                <Typography><strong>Name:</strong> {user.name}</Typography>
+                <Typography><strong>NSL ID:</strong> {user.nslId}</Typography>
+                <Typography><strong>Email:</strong> {user.email}</Typography>
+                <Typography><strong>Role:</strong> {user.userType}</Typography>
+              </Box>
+              <Button
+                variant="outlined"
+                onClick={() => setOpen(true)}
+                sx={{
+                  mt: 2,
+                  borderColor: '#1976d2',
+                  color: '#1976d2',
+                  '&:hover': { borderColor: '#115293', color: '#115293' },
+                  transition: '0.3s',
+                  '&:active': { transform: 'scale(0.95)' },
+                }}
+              >
+                Change Password
+              </Button>
+            </Paper>
+          </Zoom>
         </Grid>
       </Grid>
 
       {/* Modal for Changing Password */}
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Change Password</DialogTitle>
+      <Dialog open={open} onClose={() => setOpen(false)} TransitionComponent={Zoom}>
+        <DialogTitle sx={{ backgroundColor: '#1976d2', color: 'white' }}>Change Password</DialogTitle>
         <DialogContent>
           {message.text && (
             <Alert severity={message.type} sx={{ mb: 2 }}>
@@ -97,6 +109,7 @@ export default function Profile() {
               value={formData.currentPassword}
               onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
               required
+              sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#1976d2' } } }}
             />
             <TextField
               fullWidth
@@ -106,6 +119,7 @@ export default function Profile() {
               value={formData.newPassword}
               onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
               required
+              sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#1976d2' } } }}
             />
             <TextField
               fullWidth
@@ -115,15 +129,17 @@ export default function Profile() {
               value={formData.confirmPassword}
               onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
               required
+              sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: '#1976d2' } } }}
             />
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={() => setOpen(false)} color="error">Cancel</Button>
           <Button
             onClick={handleSubmit}
             variant="contained"
             disabled={isLoadingChangePassword}
+            sx={{ backgroundColor: '#1976d2', '&:hover': { backgroundColor: '#115293' } }}
           >
             {isLoadingChangePassword ? (
               <Box display="flex" alignItems="center">

@@ -22,15 +22,17 @@ import CheckIcon from "@mui/icons-material/Check";
 import { toast } from "react-toastify";
 
 const CreateProjectModal = ({ isOpen, closeModal }) => {
-  const { users } = useAuth(); // Ensure users is an array of user objects
+  const { users } = useAuth();
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [uniqueId, setUniqueId] = useState("");
   const [description, setDescription] = useState("");
   const [projectLead, setProjectLead] = useState("");
   const [duration, setDuration] = useState({ startDate: "", endDate: "" });
-  const [createProject,{isLoading}] = api.useCreateProjectMutation();
+  const [dateError, setDateError] = useState(""); // New state for date error
+  const [createProject, { isLoading }] = api.useCreateProjectMutation();
   const [selectedUsers, setSelectedUsers] = useState([]);
+
   const handleSelectChange = (event) => {
     const value = event.target.value;
     setSelectedUsers(value);
@@ -42,6 +44,15 @@ const CreateProjectModal = ({ isOpen, closeModal }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if start date is before end date
+    if (new Date(duration.startDate) > new Date(duration.endDate)) {
+      setDateError("End date must be later than start date");
+      return;
+    } else {
+      setDateError("");
+    }
+
     if (!uniqueId.trim()) {
       alert("Unique ID cannot be empty");
       return;
@@ -184,7 +195,6 @@ const CreateProjectModal = ({ isOpen, closeModal }) => {
                 })}
               </Box>
             </Grid>
-
             <Grid item xs={12} sm={6}>
               <TextField
                 type="date"
@@ -213,6 +223,8 @@ const CreateProjectModal = ({ isOpen, closeModal }) => {
                 required
                 variant="outlined"
                 margin="dense"
+                error={Boolean(dateError)} // Display error on field
+                helperText={dateError} // Show error message
               />
             </Grid>
           </Grid>
@@ -224,14 +236,14 @@ const CreateProjectModal = ({ isOpen, closeModal }) => {
             }}
           >
             <Button type="submit" variant="contained" size="large">
-            {isLoading ? (
-              <>
-                <CircularProgress size={24} sx={{ color: "#fff", mr: 1 }} />
-                Processing...
-              </>
-            ) : (
-              "Create Project"
-            )}
+              {isLoading ? (
+                <>
+                  <CircularProgress size={24} sx={{ color: "#fff", mr: 1 }} />
+                  Processing...
+                </>
+              ) : (
+                "Create Project"
+              )}
             </Button>
           </Box>
         </form>

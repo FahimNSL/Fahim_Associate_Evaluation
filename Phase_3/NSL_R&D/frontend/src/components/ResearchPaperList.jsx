@@ -1,9 +1,9 @@
 import {
   Box,
   Button,
-  List,
-  ListItem,
-  ListItemText,
+  Card,
+  CardContent,
+  CardActions,
   Typography,
   Paper,
   Dialog,
@@ -15,8 +15,10 @@ import {
 import { useState } from 'react';
 import { api } from '../store/api';
 import { toast } from 'react-toastify';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 
-export default function ResearchPaperList({ projectId, canAdd,canDelete }) {
+export default function ResearchPaperList({ projectId, canAdd, canDelete }) {
   const [open, setOpen] = useState(false);
   const [paper, setPaper] = useState({
     title: '',
@@ -26,13 +28,10 @@ export default function ResearchPaperList({ projectId, canAdd,canDelete }) {
     precision: '',
     recall: ''
   });
-  const [deletePaperId, setDeletePaperId] = useState(null); // State for deleting paper
 
   const { data: reports = [], isLoading, isError, error } = api.useGetReportsQuery(projectId);
   const [updateReport, { isLoading: isUpdating }] = api.useUpdateReportMutation();
-  const [deleteReport, { isLoading: isDeleting }] = api.useDeleteReportMutation(); // Hook for deleting
-
-  console.log("Project ID:", projectId);
+  const [deleteReport, { isLoading: isDeleting }] = api.useDeleteReportMutation();
 
   const handleAddPaper = async () => {
     try {
@@ -41,26 +40,14 @@ export default function ResearchPaperList({ projectId, canAdd,canDelete }) {
         await updateReport({
           id: report._id,
           researchPapers: [...report.researchPapers, paper]
-        })
-        .unwrap()
-        .then((response) => {
-          console.log('Research paper added successfully:', response);
-        })
-        .catch((error) => {
-          console.error('Failed to add research paper:', error);
-        });
+        }).unwrap();
+        toast.success('Research paper added successfully');
       }
       setOpen(false);
-      setPaper({
-        title: '',
-        publishedYear: '',
-        dataset: '',
-        accuracy: '',
-        precision: '',
-        recall: ''
-      });
+      setPaper({ title: '', publishedYear: '', dataset: '', accuracy: '', precision: '', recall: '' });
     } catch (error) {
       console.error('Failed to add research paper:', error);
+      toast.error('Failed to add research paper');
     }
   };
 
@@ -70,18 +57,12 @@ export default function ResearchPaperList({ projectId, canAdd,canDelete }) {
       try {
         await updateReport({
           id: report._id,
-          researchPapers: report.researchPapers.filter(p => p._id !== paperId) // Filter out the paper to be deleted
-        })
-        .unwrap()
-        .then((response) => {
-          toast("Research paper deleted successfully", { type: "success" });
-          console.log('Research paper deleted successfully:', response);
-        })
-        .catch((error) => {
-          console.error('Failed to delete research paper:', error);
-        });
+          researchPapers: report.researchPapers.filter(p => p._id !== paperId)
+        }).unwrap();
+        toast.success("Research paper deleted successfully");
       } catch (error) {
         console.error('Failed to delete research paper:', error);
+        toast.error('Failed to delete research paper');
       }
     }
   };
@@ -94,45 +75,52 @@ export default function ResearchPaperList({ projectId, canAdd,canDelete }) {
   return (
     <Box>
       <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h6">Research Papers</Typography>
+        <Typography variant="h5" gutterBottom>Research Papers</Typography>
         {canAdd && (
-          <Button variant="contained" onClick={() => setOpen(true)} disabled={isUpdating}>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => setOpen(true)}
+            disabled={isUpdating}
+          >
             Add Paper
           </Button>
         )}
       </Box>
 
-      <Paper>
-        <List>
-          {papers.map((paper, index) => (
-            <ListItem key={index}>
-              <ListItemText
-                primary={paper.title}
-                secondary={
-                  <>
-                    <Typography component="span" variant="body2">
-                      Published: {paper.publishedYear}
-                    </Typography>
-                    <br />
-                    <Typography component="span" variant="body2">
-                      Dataset: {paper.dataset}
-                    </Typography>
-                    <br />
-                    <Typography component="span" variant="body2">
-                      Metrics: Accuracy {paper.accuracy}%, Precision {paper.precision}%, Recall {paper.recall}%
-                    </Typography>
-                  </>
-                }
-              />
-              {canDelete && <Button variant="outlined" color="error" onClick={() => handleDeletePaper(paper._id)} disabled={isDeleting}>
-                Delete
-              </Button>}
-            </ListItem>
-          ))}
-        </List>
+      <Paper elevation={2} sx={{ padding: 2 }}>
+        {papers.map((paper, index) => (
+          <Card key={index} sx={{ mb: 2, transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.02)' } }}>
+            <CardContent>
+              <Typography variant="h6" component="div">{paper.title}</Typography>
+              <Typography variant="body2" color="text.secondary">
+                Published: {paper.publishedYear}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Dataset: {paper.dataset}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Metrics: Accuracy {paper.accuracy}%, Precision {paper.precision}%, Recall {paper.recall}%
+              </Typography>
+            </CardContent>
+            {canDelete && (
+              <CardActions>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  startIcon={<DeleteIcon />}
+                  onClick={() => handleDeletePaper(paper._id)}
+                  disabled={isDeleting}
+                >
+                  Delete
+                </Button>
+              </CardActions>
+            )}
+          </Card>
+        ))}
       </Paper>
 
-      <Dialog open={open} onClose={() => setOpen(false)}>
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="sm">
         <DialogTitle>Add Research Paper</DialogTitle>
         <DialogContent>
           <TextField
