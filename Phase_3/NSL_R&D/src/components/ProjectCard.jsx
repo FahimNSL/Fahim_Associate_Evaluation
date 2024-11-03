@@ -11,40 +11,22 @@ export default function ProjectCard({ project }) {
   const navigate = useNavigate();
 
   return (
-    <Card sx={{
-      transition: 'transform 0.3s',
-      '&:hover': {
-        transform: 'scale(1.03)',
-        boxShadow: 6,
-      },
-      borderRadius: '12px',
-      backgroundColor: '#ffffff',
-      boxShadow: 2,
-    }}>
+    <Card>
       <CardContent>
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: '#3f51b5' }}>
+        <Typography variant="h6" gutterBottom>
           {project.title}
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ height: '60px', overflow: 'hidden' }}>
+        <Typography variant="body2" color="text.secondary">
           {project.description}
         </Typography>
-        <Typography variant="body2" sx={{ mt: 1, fontWeight: 'medium', color: project.status === 'active' ? 'green' : 'red' }}>
+        <Typography variant="body2" sx={{ mt: 1 }}>
           Status: {project.status}
         </Typography>
       </CardContent>
-      <CardActions sx={{ justifyContent: 'flex-end' }}>
+      <CardActions>
         <Button
           size="small"
           onClick={() => navigate(`/projects/${project._id}`)}
-          variant="contained"
-          sx={{
-            backgroundColor: '#3f51b5',
-            color: '#fff',
-            '&:hover': {
-              backgroundColor: '#303f9f',
-            },
-            borderRadius: '8px',
-          }}
         >
           View Details
         </Button>

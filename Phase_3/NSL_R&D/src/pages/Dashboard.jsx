@@ -18,9 +18,6 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
-
-  console.log({ user });
-  // Use the API hook to fetch projects
   const { data: projects, isLoading, error } = api.useGetProjectsQuery();
 
   // Filter projects based on the search term
@@ -44,19 +41,13 @@ export default function Dashboard() {
 
   return (
     <Box>
-       <Box sx={{ mb: 4, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <Box sx={{ mb: 4, display: "flex", justifyContent: "space-between" }}>
         <TextField
           label="Search Projects"
           variant="outlined"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ width: 300, backgroundColor: '#fff' }}
-          InputProps={{
-            sx: {
-              borderRadius: '8px',
-              boxShadow: 1,
-            },
-          }}
+          sx={{ width: 300 }}
         />
         {(user.userType === "admin" || user.userType === "projectLead") && (
           <Button

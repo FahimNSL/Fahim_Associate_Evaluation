@@ -30,9 +30,10 @@ const reportSchema = new mongoose.Schema({
     default: 'draft'
   },
   files: [{
-    filename: String,
-    path: String,
-    type: String
+    filename: { type: String, required: true },
+    path: { type: String, required: true },
+    size: { type: Number, required: true },
+    mimeType: { type: String, required: true },
   }],
   researchPapers: [{
     title: String,

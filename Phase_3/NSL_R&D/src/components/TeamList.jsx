@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   List,
   ListItem,
@@ -14,71 +15,64 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  CircularProgress,
 } from '@mui/material';
 import { Delete as DeleteIcon } from '@mui/icons-material';
-import { useState } from 'react';
-import { api } from '../store/api';
+import { useAddUserMutation, useDeleteUserMutation } from '../store/api';
+
 
 export default function TeamList({ projectId, canManageTeam, members, lead }) {
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
-  const [updateProject] = api.useUpdateProjectMutation();
+  const [loadingRemove, setLoadingRemove] = useState(null); // Holds member ID of the loading removal
+
+  // Redux Toolkit Query hooks for API calls
+  const [addMember, { isLoading: loadingAdd }] = useAddUserMutation();
+  const [removeMember] = useDeleteUserMutation();
 
   const handleAddMember = async () => {
     try {
-      await updateProject({
-        id: projectId,
-        members: [...members.map(m => m._id), email]
-      });
+      await addMember({ projectId, email }).unwrap(); // Unwrap the promise to handle success/error
       setOpen(false);
       setEmail('');
+      // Optionally refetch or update the members list here if necessary
     } catch (error) {
       console.error('Failed to add member:', error);
     }
   };
 
   const handleRemoveMember = async (memberId) => {
+    setLoadingRemove(memberId);
     try {
-      await updateProject({
-        id: projectId,
-        members: members.filter(m => m._id !== memberId).map(m => m._id)
-      });
+      await removeMember({ projectId, memberId }).unwrap(); // Unwrap the promise to handle success/error
+      // Optionally refetch or update the members list here if necessary
     } catch (error) {
       console.error('Failed to remove member:', error);
+    } finally {
+      setLoadingRemove(null);
     }
   };
 
   return (
-    <Box sx={{ mb: 4 }}>
+    <Box>
       <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#3f51b5' }}>Team Members</Typography>
+        <Typography variant="h6">Team Members</Typography>
         {canManageTeam && (
-          <Button
-            variant="contained"
-            onClick={() => setOpen(true)}
-            sx={{
-              backgroundColor: '#3f51b5',
-              '&:hover': {
-                backgroundColor: '#303f9f',
-              },
-              borderRadius: '8px',
-            }}
-          >
+          <Button variant="contained" onClick={() => setOpen(true)}>
             Add Member
           </Button>
         )}
       </Box>
 
-      <Paper elevation={3} sx={{ borderRadius: '12px' }}>
+      <Paper>
         <List>
-          <ListItem sx={{ backgroundColor: '#f0f4ff', borderRadius: '8px', mb: 1 }}>
+          <ListItem>
             <ListItemAvatar>
-              <Avatar sx={{ bgcolor: '#3f51b5' }}>{lead.name[0]}</Avatar>
+              <Avatar>{lead.name[0]}</Avatar>
             </ListItemAvatar>
             <ListItemText
               primary={lead.name}
               secondary="Project Lead"
-              primaryTypographyProps={{ fontWeight: 'bold', color: '#3f51b5' }}
             />
           </ListItem>
           {members.map((member) => (
@@ -86,12 +80,11 @@ export default function TeamList({ projectId, canManageTeam, members, lead }) {
               key={member._id}
               secondaryAction={
                 canManageTeam && member._id !== lead._id && (
-                  <IconButton onClick={() => handleRemoveMember(member._id)} sx={{ color: '#f44336' }}>
-                    <DeleteIcon />
+                  <IconButton onClick={() => handleRemoveMember(member._id)} disabled={loadingRemove === member._id}>
+                    {loadingRemove === member._id ? <CircularProgress size={24} /> : <DeleteIcon />}
                   </IconButton>
                 )
               }
-              sx={{ mb: 1 }}
             >
               <ListItemAvatar>
                 <Avatar>{member.name[0]}</Avatar>
@@ -116,17 +109,12 @@ export default function TeamList({ projectId, canManageTeam, members, lead }) {
             fullWidth
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '8px',
-              },
-            }}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={handleAddMember} variant="contained" sx={{ backgroundColor: '#3f51b5', '&:hover': { backgroundColor: '#303f9f' } }}>
-            Add
+          <Button onClick={handleAddMember} variant="contained" disabled={loadingAdd}>
+            {loadingAdd ? <CircularProgress size={24} /> : 'Add'}
           </Button>
         </DialogActions>
       </Dialog>

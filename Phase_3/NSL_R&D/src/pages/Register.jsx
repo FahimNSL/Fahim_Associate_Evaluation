@@ -39,23 +39,23 @@ export default function Register() {
   return (
     <Box
       sx={{
-        height: "100vh",
+        height: "95vh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, #d1c4e9 0%, #bbdefb 100%)",
+        background: "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
         padding: 2,
       }}
     >
       <Paper
-        elevation={8}
+        elevation={5}
         sx={{
-          p: 5,
-          maxWidth: 520,
+          p: 4,
+          maxWidth: 500,
           width: "100%",
-          borderRadius: 4,
-          boxShadow: "0px 6px 30px rgba(0, 0, 0, 0.2)",
-          background: "rgba(255, 255, 255, 0.95)",
+          borderRadius: 3,
+          boxShadow: "0px 6px 20px rgba(0, 0, 0, 0.15)",
+          background: "rgba(255, 255, 255, 0.9)",
         }}
       >
         <Typography
@@ -63,20 +63,20 @@ export default function Register() {
           component="h1"
           align="center"
           gutterBottom
-          sx={{ fontWeight: "bold", color: "#283593", mb: 2 }}
+          sx={{ fontWeight: "bold", color: "#0d47a1" }}
         >
-          Welcome to NSL R&D
+          Create Your Account
         </Typography>
         <Typography
           variant="body1"
           color="textSecondary"
           align="center"
-          sx={{ mb: 4 }}
+          sx={{ mb: 3 }}
         >
-          Sign up and start your journey with us.
+          Join us and get started today!
         </Typography>
         <form onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
+          <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -87,13 +87,6 @@ export default function Register() {
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": { borderColor: "#c5cae9" },
-                    "&:hover fieldset": { borderColor: "#5c6bc0" },
-                    "&.Mui-focused fieldset": { borderColor: "#283593" },
-                  },
-                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -106,13 +99,6 @@ export default function Register() {
                 onChange={(e) =>
                   setFormData({ ...formData, nslId: e.target.value })
                 }
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": { borderColor: "#c5cae9" },
-                    "&:hover fieldset": { borderColor: "#5c6bc0" },
-                    "&.Mui-focused fieldset": { borderColor: "#283593" },
-                  },
-                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -125,13 +111,6 @@ export default function Register() {
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": { borderColor: "#c5cae9" },
-                    "&:hover fieldset": { borderColor: "#5c6bc0" },
-                    "&.Mui-focused fieldset": { borderColor: "#283593" },
-                  },
-                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -145,13 +124,6 @@ export default function Register() {
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
                 }
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": { borderColor: "#c5cae9" },
-                    "&:hover fieldset": { borderColor: "#5c6bc0" },
-                    "&.Mui-focused fieldset": { borderColor: "#283593" },
-                  },
-                }}
               />
             </Grid>
             <Grid item xs={12}>
@@ -165,13 +137,6 @@ export default function Register() {
                 onChange={(e) =>
                   setFormData({ ...formData, userType: e.target.value })
                 }
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": { borderColor: "#c5cae9" },
-                    "&:hover fieldset": { borderColor: "#5c6bc0" },
-                    "&.Mui-focused fieldset": { borderColor: "#283593" },
-                  },
-                }}
               >
                 <MenuItem value="member">Member</MenuItem>
                 <MenuItem value="projectLead">Project Lead</MenuItem>
@@ -189,14 +154,13 @@ export default function Register() {
             variant="contained"
             type="submit"
             sx={{
-              mt: 4,
-              backgroundColor: "#283593",
+              mt: 3,
+              backgroundColor: "#1565c0",
               color: "#fff",
-              "&:hover": { backgroundColor: "#1a237e" },
-              py: 1.75,
+              "&:hover": { backgroundColor: "#0d47a1" },
+              py: 1.5,
               fontSize: "1.1rem",
               fontWeight: "bold",
-              borderRadius: 3,
             }}
           >
             Register
@@ -211,7 +175,7 @@ export default function Register() {
             <Link
               onClick={() => navigate("/login")}
               sx={{
-                color: "#283593",
+                color: "#1565c0",
                 cursor: "pointer",
                 fontWeight: "bold",
               }}

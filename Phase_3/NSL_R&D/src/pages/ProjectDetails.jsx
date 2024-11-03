@@ -15,8 +15,11 @@ import { useAuth } from "../contexts/AuthContext";
 import ReportList from "../components/ReportList";
 import TeamList from "../components/TeamList";
 import ResearchPaperList from "../components/ResearchPaperList";
+import EditProjectModal from "../components/EditProjectModal";
+import TeamContributionGraph from "../components/TeamContributionGraph";
 
 export default function ProjectDetails() {
+  const [isOpenProjectModal, setIsOpenProjectModal] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -26,8 +29,8 @@ export default function ProjectDetails() {
   if (isLoading) {
     return <CircularProgress />;
   }
-
-  const isProjectLead = user._id === project.projectLead._id;
+console.log({"project in details":project})
+  const isProjectLead = user._id === project?.projectLead?._id;
   const isMember = project?.projectMembers.some(
     (member) => member._id === user._id
   );
@@ -43,15 +46,21 @@ export default function ProjectDetails() {
           alignItems: "center",
         }}
       >
-        <Typography variant="h4">{project.title}</Typography>
+        <Typography variant="h4">{project?.title}</Typography>
         {canEdit && (
           <Button
             variant="contained"
-            onClick={() => navigate(`/projects/${id}/edit`)}
+            onClick={() => setIsOpenProjectModal(true)}
           >
             Edit Project
           </Button>
         )}
+
+<EditProjectModal
+project={project}
+          isOpen={isOpenProjectModal}
+          closeModal={() => setIsOpenProjectModal(false)}
+        />
       </Box>
 
       <Paper sx={{ mb: 4 }}>
@@ -63,6 +72,7 @@ export default function ProjectDetails() {
           <Tab label="Reports" />
           <Tab label="Research Papers" />
           <Tab label="Team" />
+          <Tab label="Contributon Graph" />
         </Tabs>
       </Paper>
 
@@ -73,18 +83,18 @@ export default function ProjectDetails() {
               <Typography variant="h6" gutterBottom>
                 Description
               </Typography>
-              <Typography>{project.description}</Typography>
+              <Typography>{project?.description}</Typography>
               <Box sx={{ mt: 2 }}>
                 <Typography>
-                  <strong>Status:</strong> {project.status}
+                  <strong>Status:</strong> {project?.status}
                 </Typography>
                 <Typography>
                   <strong>Duration:</strong>{" "}
-                  {new Date(project.duration.startDate).toLocaleDateString()} -{" "}
-                  {new Date(project.duration.endDate).toLocaleDateString()}
+                  {new Date(project?.duration?.startDate).toLocaleDateString()} -{" "}
+                  {new Date(project?.duration?.endDate).toLocaleDateString()}
                 </Typography>
                 <Typography>
-                  <strong>Project Lead:</strong> {project.projectLead.name}
+                  <strong>Project Lead:</strong> {project?.projectLead?.name}
                 </Typography>
               </Box>
             </Paper>
@@ -104,8 +114,13 @@ export default function ProjectDetails() {
         <TeamList
           projectId={id}
           canManageTeam={canEdit}
-          members={project.projectMembers}
-          lead={project.projectLead}
+          members={project?.projectMembers}
+          lead={project?.projectLead}
+        />
+      )}
+       {activeTab === 4 && (
+        <TeamContributionGraph
+        projectId={id}
         />
       )}
     </Box>

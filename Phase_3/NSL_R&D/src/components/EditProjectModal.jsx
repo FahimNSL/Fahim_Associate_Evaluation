@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TextField,
   Button,
@@ -21,16 +21,28 @@ import { useAuth } from "../contexts/AuthContext";
 import CheckIcon from "@mui/icons-material/Check";
 import { toast } from "react-toastify";
 
-const CreateProjectModal = ({ isOpen, closeModal }) => {
+const EditProjectModal = ({ isOpen, closeModal, project }) => {
   const { users } = useAuth(); // Ensure users is an array of user objects
-  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [uniqueId, setUniqueId] = useState("");
   const [description, setDescription] = useState("");
   const [projectLead, setProjectLead] = useState("");
   const [duration, setDuration] = useState({ startDate: "", endDate: "" });
-  const [createProject,{isLoading}] = api.useCreateProjectMutation();
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [updateProject, { isLoading }] = api.useUpdateProjectMutation(); // Assuming you have an update mutation
+  const navigate = useNavigate();
+console.log(project?.projectMembers)
+  useEffect(() => {
+    if (project) {
+      setTitle(project?.title);
+      setUniqueId(project?.uniqueId);
+      setDescription(project?.description);
+      setProjectLead(project?.projectLead);
+      setDuration(project?.duration);
+      setSelectedUsers(project?.projectMembers);
+    }
+  }, [project]);
+
   const handleSelectChange = (event) => {
     const value = event.target.value;
     setSelectedUsers(value);
@@ -52,24 +64,24 @@ const CreateProjectModal = ({ isOpen, closeModal }) => {
       uniqueId,
       description,
       projectLead,
-      projectMembers: JSON.stringify(selectedUsers),
+      projectMembers: selectedUsers, 
       duration,
     };
 
     try {
-      await createProject(projectData).unwrap();
-      toast.success("Project created successfully");
+      await updateProject({ id: project._id, ...projectData }).unwrap();
+      toast.success("Project updated successfully");
       navigate("/");
       closeModal();
     } catch (error) {
-      toast.error("Failed to create project");
+      toast.error("Failed to update project");
     }
   };
 
   return (
     <Dialog open={isOpen} onClose={closeModal}>
       <Box>
-        <DialogTitle>Create Project</DialogTitle>
+        <DialogTitle>Edit Project</DialogTitle>
         <Button
           onClick={closeModal}
           sx={{ position: "absolute", top: 10, right: 10 }}
@@ -223,14 +235,14 @@ const CreateProjectModal = ({ isOpen, closeModal }) => {
               mt: 3,
             }}
           >
-            <Button type="submit" variant="contained" size="large">
+            <Button type="submit" variant="contained" size="large" disabled={isLoading}>
             {isLoading ? (
               <>
                 <CircularProgress size={24} sx={{ color: "#fff", mr: 1 }} />
                 Processing...
               </>
             ) : (
-              "Create Project"
+              "Update Project"
             )}
             </Button>
           </Box>
@@ -240,4 +252,4 @@ const CreateProjectModal = ({ isOpen, closeModal }) => {
   );
 };
 
-export default CreateProjectModal;
+export default EditProjectModal;

@@ -29,7 +29,7 @@ export const api = createApi({
     }),
     getProject: builder.query({
       query: (id) => `/projects/${id}`,
-      providesTags: ["Projects"],
+      providesTags: ["Project"],
     }),
     createProject: builder.mutation({
       query: (project) => ({
@@ -39,6 +39,9 @@ export const api = createApi({
       }),
       invalidatesTags: ["Projects"],
     }),
+    
+
+    
     updateProject: builder.mutation({
       query: ({ id, ...project }) => ({
         url: `/projects/${id}`,
@@ -50,11 +53,11 @@ export const api = createApi({
 
     // Reports
     getReports: builder.query({
-      query: (projectId) => `/reports?project=${projectId}`,
+      query: (projectId) => `/reports/${projectId}`, // Use route parameter instead of query parameter
       providesTags: ["Reports"],
     }),
     getReport: builder.query({
-      query: (id) => `/reports/${id}`,
+      query: (id) => `/reports/report/${id}`,
       providesTags: ["Reports"],
     }),
     createReport: builder.mutation({
@@ -87,6 +90,57 @@ export const api = createApi({
       }),
       invalidatesTags: ["Users"],
     }),
+    changePassword: builder.mutation({
+      query: (data) => ({
+        url: "/auth/change-password",
+        method: "PUT",
+        body: data,
+      }),
+    }),
+
+    addUser: builder.mutation({
+      query: ({ projectId, email }) => ({
+        url: `/projects/${projectId}/add`,
+        method: "POST",
+        body: { email },
+      }),
+      invalidatesTags: ["Projects","Project"], 
+    }),
+    deleteUser: builder.mutation({
+      query: ({ projectId, memberId }) => ({
+        url: `/projects/${projectId}/remove/${memberId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Projects","Project"], 
+    }),
+
+    deleteReport: builder.mutation({
+      query: (reportId) => ({
+        url: `/reports/${reportId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Reports"],
+    }),
+
+  
+    // Delete User
+    deleteUserDatabase: builder.mutation({
+      query: (userId) => ({
+        url: `/users/${userId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Users"], 
+    }),
+
+    // Change User Role
+    changeUserRole: builder.mutation({
+      query: ({ userId, role }) => ({  // Changed newRole to role
+        url: `/users/${userId}/role`,
+        method: "PUT",
+        body: { userType: role }, // Sending userType
+      }),
+      invalidatesTags: ["Users"], 
+    }),
   }),
 });
 
@@ -102,4 +156,12 @@ export const {
   useUpdateReportMutation,
   useGetUsersQuery,
   useCreateUserMutation,
+  useChangePasswordMutation,
+  useAddUserMutation,
+  useDeleteUserMutation,
+  useDeleteUserDatabaseMutation,
+  useChangeUserRoleMutation,
+  useDeleteReportMutation,
+
+ 
 } = api;

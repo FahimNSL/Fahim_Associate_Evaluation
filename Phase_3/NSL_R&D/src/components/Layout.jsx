@@ -19,30 +19,21 @@ export default function Layout({ children }) {
   const { user } = useAuth();
 
   return (
-    <Box sx={{ flexGrow: 1, bgcolor: '#f0f4f8', minHeight: '100vh' }}>
-      <AppBar position="static" sx={{ bgcolor: '#3f51b5', boxShadow: 'none' }}>
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between", px: 3 }}>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static">
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Typography
             variant="h6"
             component="div"
-            sx={{
-              cursor: "pointer",
-              fontWeight: 'bold',
-              color: '#ffffff',
-              '&:hover': {
-                color: '#ffeb3b', // Add a hover effect for the title
-              },
-            }}
+            sx={{ cursor: "pointer" }}
             onClick={() => navigate("/")}
           >
-            NSL R&D
+            NSL R&D 
           </Typography>
           <Navigation isMobile={isMobile} user={user} />
         </Toolbar>
       </AppBar>
-      <Container sx={{ mt: 4, mb: 4, bgcolor: '#ffffff', borderRadius: '8px', boxShadow: 2, p: 4 }}>
-        {children}
-      </Container>
+      <Container sx={{ mt: 4, mb: 4 }}>{children}</Container>
     </Box>
   );
 }

@@ -3,6 +3,7 @@ import { Button, IconButton, Menu, MenuItem, Box, Hidden } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const Navigation = ({ isMobile, user }) => {
   const navigate = useNavigate();
@@ -35,7 +36,12 @@ const Navigation = ({ isMobile, user }) => {
             <Button color="inherit" onClick={() => navigate("/profile")}>
               Profile
             </Button>
-            <Button color="inherit" onClick={logout}>
+            <Button
+              color="inherit"
+              onClick={logout}
+              startIcon={<LogoutIcon />}
+              title="Logout"
+            >
               Logout
             </Button>
           </Box>
@@ -67,7 +73,10 @@ const Navigation = ({ isMobile, user }) => {
               <MenuItem onClick={() => handleClose("/profile")}>
                 Profile
               </MenuItem>
-              <MenuItem onClick={logout}>Logout</MenuItem>
+              <MenuItem onClick={logout} title="Logout">
+                <LogoutIcon sx={{ mr: 1,color: 'red' }} />
+                Logout
+              </MenuItem>
             </>
           )}
         </Menu>
