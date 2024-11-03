@@ -66,7 +66,7 @@ export default function Login() {
           align="center"
           sx={{ fontWeight: "bold", color: "#4a148c" }}
         >
-          Welcome Back!
+          NSL R&D
         </Typography>
         <Typography
           variant="body1"
