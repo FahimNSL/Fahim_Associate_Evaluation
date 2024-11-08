@@ -25,8 +25,14 @@ export default function Register() {
   });
   const [error, setError] = useState("");
 
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
     try {
       await register(formData);
       navigate("/");

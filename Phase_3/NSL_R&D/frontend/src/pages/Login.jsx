@@ -22,9 +22,14 @@ export default function Login() {
       navigate(redirectPath);
     }
   }, [user, location, navigate]);
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
     setIsLoading(true); // Start loading
     setError("");
 

@@ -74,6 +74,7 @@ export default function ReportList({ projectId, canAdd }) {
   const [deleteReport] = api.useDeleteReportMutation();
   const [openDialog, setOpenDialog] = useState(false);
   const [reportToDelete, setReportToDelete] = useState(null);
+  console.log(reports);
 
   const handleDelete = async (reportId) => {
     try {
@@ -83,6 +84,7 @@ export default function ReportList({ projectId, canAdd }) {
       console.error("Failed to delete report:", error);
     }
   };
+
 
   const confirmDelete = (reportId) => {
     setReportToDelete(reportId);
